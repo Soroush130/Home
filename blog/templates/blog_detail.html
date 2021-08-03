@@ -1,0 +1,181 @@
+{% extends 'shared/_MainLayout.html' %}
+{% load static %}
+
+
+{% block content %}
+    <section class="intro-single">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-lg-8">
+                    <div class="title-single-box">
+                        <h1 class="title-single">Book Cover Deisgn</h1>
+                        <span class="color-text-a">News Single.</span>
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-4">
+                    <nav aria-label="breadcrumb" class="breadcrumb-box d-flex justify-content-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="#">Home</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                Book Cover Deisgn
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="news-single nav-arrow-b">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="news-img-box">
+                        <img src="{{ blog.image.url }}" alt="" class="img-fluid">
+                    </div>
+                </div>
+                <div class="col-md-10 offset-md-1 col-lg-8 offset-lg-2">
+                    <div class="post-information">
+                        <ul class="list-inline text-center color-a">
+                            <li class="list-inline-item mr-2">
+                                <strong>Author: </strong>
+                                <span class="color-text-a">{{ blog.author }}</span>
+                            </li>
+                            <li class="list-inline-item mr-2">
+                                <strong>Category: </strong>
+                                <span class="color-text-a">{{ blog.category.title }}</span>
+                            </li>
+                            <li class="list-inline-item">
+                                <strong>Date: </strong>
+                                <span class="color-text-a">{{ blog.date }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="post-content color-text-a">
+                        <p>
+                            {{ blog.body }}
+                        </p>
+                    </div>
+                    <div class="post-footer">
+                        <div class="post-share">
+                            <span>Share: </span>
+                            <ul class="list-inline socials">
+                                <li class="list-inline-item">
+                                    <a href="#">
+                                        <i class="fa fa-facebook" aria-hidden="true"></i>
+                                    </a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a href="#">
+                                        <i class="fa fa-twitter" aria-hidden="true"></i>
+                                    </a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a href="#">
+                                        <i class="fa fa-instagram" aria-hidden="true"></i>
+                                    </a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a href="#">
+                                        <i class="fa fa-pinterest-p" aria-hidden="true"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-10 offset-md-1 col-lg-10 offset-lg-1">
+                    <div class="title-box-d">
+                        <h3 class="title-d">Comments ({{ comments.count }})</h3>
+                    </div>
+
+                    <div class="box-comments">
+                        <ul class="list-comments">
+                            {% for comment in comments %}
+                                {% if comment.reply is None %}
+                                    <li>
+                                        <div class="comment-avatar">
+                                            <img src="{% static 'img/author-2.jpg' %}" alt="">
+                                        </div>
+                                        <div class="comment-details">
+                                            <h4 class="comment-author">{{ comment.user.username }}</h4>
+                                            <span>{{ comment.create_on }}</span>
+                                            <p class="comment-description">
+                                                {{ comment.comment }}
+                                            </p>
+                                            <form action="/reply-comment/{{ blog.id }}/{{ comment.id }}" class="form-a" method="POST">
+                                                {% csrf_token %}
+                                                <div class="row">
+
+                                                    <div class="col-md-12 mb-3">
+                                                        <div class="form-group">
+                                                            <label for="textMessage">Enter message</label>
+                                                            <textarea id="textMessage" class="form-control"
+                                                                      placeholder="Comment *"
+                                                                      name="comment" cols="25" rows="5"
+                                                                      required=""></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <button type="submit" class="btn btn-a">Send Message</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+
+                                        </div>
+                                    </li>
+                                {% endif %}
+                                {% for data in comment.reply_comment.all %}
+                                    <li class="comment-children">
+                                        <div class="comment-avatar">
+                                            <img src="{% static 'img/author-1.jpg' %}" alt="">
+                                        </div>
+                                        <div class="comment-details">
+                                            <h4 class="comment-author">{{ data.user.username }}</h4>
+                                            <span>{{ data.create_on }}</span>
+                                            <p class="comment-description">
+                                                {{ data.comment }}
+                                            </p>
+                                        </div>
+                                    </li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div class="form-comments">
+                        <div class="title-box-d">
+                            <h3 class="title-d"> Comment </h3>
+                        </div>
+                        <form action="/comment/{{ blog.id }}" class="form-a" method="POST">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-group">
+                                        <label for="inputName">Enter Rate</label>
+                                        <input type="number" name="rate" min="0" max="5"
+                                               class="form-control form-control-lg form-control-a"
+                                               id="inputName" placeholder="rate" required="">
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <div class="form-group">
+                                        <label for="textMessage">Enter message</label>
+                                        <textarea id="textMessage" class="form-control" placeholder="Comment *"
+                                                  name="comment" cols="45" rows="8" required=""></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-a">Send Message</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
